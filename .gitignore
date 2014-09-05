@@ -52,3 +52,11 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# Unity
+client/unity/Library/metadata/
+*.meta
+*.csproj
+*.unityproj
+*.sln
+*.swp
+*.suo
