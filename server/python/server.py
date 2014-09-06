@@ -12,6 +12,8 @@ if __name__ == "__main__":
 
     server = command_service.TCPServer((HOST, PORT), command_service.Handler)
     game_world = world.World()
+    game_world.load_maps()
+
     processor = command_processor.Processor(game_world)
     server.set_world_processor(game_world, processor)
     ip, port = server.server_address
