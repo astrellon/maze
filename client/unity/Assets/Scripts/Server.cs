@@ -14,14 +14,21 @@ public class Server : MonoBehaviour {
     }
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         Client = new MazeClient("localhost", 9090);
         Client.Connect();
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
 	
 	}
+
+    void OnApplicationQuit () 
+    {
+        Client.Shutdown();
+    }
 
 }

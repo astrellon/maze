@@ -65,6 +65,13 @@ public class MazeClient
         }
     }
 
+    public void Shutdown()
+    {
+        Running = false;
+        Client.Shutdown(SocketShutdown.Both);
+        Client.Close();        
+    }
+
     public void Send(string data)
     {
         byte[] bytes = Encoding.ASCII.GetBytes(data);
@@ -107,6 +114,7 @@ public class MazeClient
             catch (Exception e)
             {
                 Debug.Log("Error receiving data: " + e.ToString());
+                Running = false;
             }
         }
     }
