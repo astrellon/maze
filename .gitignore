@@ -53,10 +53,13 @@ coverage.xml
 docs/_build/
 
 # Unity
-client/unity/Library/metadata/
-*.meta
+client/unity/Library/
+client/unity/Temp/
+client/unity/Obj/
+client/unity/Build/
 *.csproj
 *.unityproj
 *.sln
 *.swp
 *.suo
+
