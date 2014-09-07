@@ -4,10 +4,37 @@ class Map:
     _width = 0
     _height = 0
 
-    def create_map(self, width, height):
+    def init_map(self, width, height):
         self._width = width
         self._height = height
-        self._data = [x[:] for x in [[0]*width]*height]
+        self._data = [0 for x in range(height * width)]
+        self.create_map()
+
+    def add_border(self):
+        x = 0
+        top = self.height - 1
+        while x < self.width:
+            self.set_map(x, 0, 1)
+            self.set_map(x, top, 1)
+            x = x + 1
+
+        y = 0
+        right = self.width - 1
+        while y < self.height:
+            self.set_map(0, y, 1)
+            self.set_map(right, y, 1)
+            y = y + 1
+
+    def set_map(self, x, y, tile):
+        self.data[y * self.width + x] = tile
+
+    def create_map(self):
+        pass
+
+    @property
+    def base_map(self):
+        print("BM None")
+        return "none"
 
     @property
     def width(self):
@@ -23,7 +50,10 @@ class Map:
 
     def serialise(self):
         return {
-            "data": self._data
+            "width": self.width,
+            "height": self.height,
+            "data": self._data,
+            "base_map": self.base_map
         }
 
     def deserialise(self, input):
