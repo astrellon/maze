@@ -21,7 +21,9 @@ class World:
             if file == "maps/__init__.py":
                 continue
 
+            print("Attepmting to load map: ", file)
             mod_file = re.sub(".py$", "", file.replace("/", "."))
+            print("Attempt to load mod: ", mod_file)
             mod = importlib.import_module(mod_file)
 
             if mod is None:

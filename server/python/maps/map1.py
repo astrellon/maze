@@ -1,9 +1,9 @@
-import game_map
+import game.map
 import json
 
 module_name = ""
 
-class Map1(game_map.Map):
+class Map1(game.map.Map):
     def create_map(self):
         self.add_border()
 

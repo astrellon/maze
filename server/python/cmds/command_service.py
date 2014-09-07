@@ -1,7 +1,7 @@
 import socket
 import socketserver
 import json
-import command_processor
+import cmds.command_processor
 
 class Handler(socketserver.BaseRequestHandler):
     running = True

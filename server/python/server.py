@@ -2,21 +2,21 @@
 
 import threading
 import signal
-import command_service
-import command_processor
-import world
+import cmds.command_service
+import cmds.command_processor
+import game.world
 
 if __name__ == "__main__":
     # Port 0 means to select an arbitrary unused port
     HOST, PORT = "0.0.0.0", 9090
 
-    server = command_service.TCPServer((HOST, PORT), command_service.Handler)
-    game_world = world.World()
+    server = cmds.command_service.TCPServer((HOST, PORT), cmds.command_service.Handler)
+    game_world = game.world.World()
     game_world.load_maps()
     game_world.create_map("maps.map1", "testmap")
     game_world.serialise()
 
-    processor = command_processor.Processor(game_world)
+    processor = cmds.command_processor.Processor(game_world)
     server.set_world_processor(game_world, processor)
     ip, port = server.server_address
 
