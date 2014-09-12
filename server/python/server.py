@@ -5,13 +5,21 @@ import signal
 import cmds.command_service
 import cmds.command_processor
 import game.world
+import game.engine
 
 if __name__ == "__main__":
     # Port 0 means to select an arbitrary unused port
     HOST, PORT = "0.0.0.0", 9090
 
     server = cmds.command_service.TCPServer((HOST, PORT), cmds.command_service.Handler)
-    game_world = game.world.World()
+
+    engine = game.engine.Engine()
+    engine.setup()
+
+    game_world = game.world.World(engine)
+    game_world.setup()
+    engine.world = game_world
+
     game_world.load_maps()
     game_world.create_map("maps.map1", "testmap")
     game_world.serialise()

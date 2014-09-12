@@ -2,6 +2,7 @@ import importlib
 import glob
 import re
 import os
+import game.tiles
 
 class World:
 
@@ -9,10 +10,24 @@ class World:
 
     _maps = {}
     _base_maps = {}
+    _engine = None
+    _tile_manager = None
+
+    def __init__(self, engine):
+        self._engine = engine
+        self._tile_manager = game.tile.TileManager(self)
+
+    @property
+    def tile_manager(self):
+        return self._tile_manager
 
     @property
     def maps(self):
         return _maps
+
+    def setup(self):
+        self.load_maps()
+        game.tiles.create_default_tiles(self._tile_manager)
 
     def load_maps(self):
         files = glob.glob("maps/*.py")
@@ -39,7 +54,6 @@ class World:
         self._base_maps[name] = map
 
     def create_map(self, base_name, name):
-        print("Creating map: ", base_name, name)
         if base_name in self._base_maps.keys():
             try:
                 self._base_maps[base_name][ "create" ](self, name)
