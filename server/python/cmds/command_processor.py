@@ -5,11 +5,17 @@ class Processor:
             "welcome_to": self.world.name
         }
 
-    world = None
+    engine = None
     handlers = {}
 
-    def __init__(self, world):
-        self.world = world
+    @property
+    def world(self):
+        if engine is not None:
+            return engine.world
+        return None
+
+    def __init__(self, engine):
+        self.engine = engine
 
         self.handlers["join"] = self.join_handle
 

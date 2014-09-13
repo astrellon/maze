@@ -20,10 +20,10 @@ class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     daemon_threads = True
     allow_reuse_adress = True
 
-    world = None
+    engine = None
     processor = None
 
-    def set_world_processor(self, world, processor):
-        self.world = world
+    def set_engine_processor(self, engine, processor):
+        self.engine = engine
         self.processor = processor
 

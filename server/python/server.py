@@ -16,16 +16,8 @@ if __name__ == "__main__":
     engine = game.engine.Engine()
     engine.setup()
 
-    game_world = game.world.World(engine)
-    game_world.setup()
-    engine.world = game_world
-
-    game_world.load_maps()
-    game_world.create_map("maps.map1", "testmap")
-    game_world.serialise()
-
-    processor = cmds.command_processor.Processor(game_world)
-    server.set_world_processor(game_world, processor)
+    processor = cmds.command_processor.Processor(engine)
+    server.set_engine_processor(engine, processor)
     ip, port = server.server_address
 
     # Start a thread with the server -- that thread will then start one

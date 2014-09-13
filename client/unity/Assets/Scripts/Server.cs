@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using Maze.Service;
 
 public class Server : MonoBehaviour {
 
-    private maze.service.Client Client;
+    private Serivce Client;
     private int Counter = 0;
 
     void OnGUI() {
@@ -16,8 +17,15 @@ public class Server : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        Client = new maze.service.Client("localhost", 9090);
-        Client.Connect();
+        Client = new Service("localhost", 9090);
+        Client.Connect(() => {
+            Dictionary<string, object> join = new Dictionary<string, object>() {
+                {"cmd", "join"}
+            };
+            Client.SendData(join, (object result) => {
+                Debug.Log("Result from join: " + result);
+            });
+        });
 	}
 	
 	// Update is called once per frame
