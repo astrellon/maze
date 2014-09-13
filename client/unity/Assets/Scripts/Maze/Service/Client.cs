@@ -9,7 +9,7 @@ using MiniJSON;
 
 using UnityEngine;
 
-namespace maze.service
+namespace Maze.Service
 {
     public class Client : ISendService
     {
@@ -26,7 +26,9 @@ namespace maze.service
                 Dictionary<string, object> join = new Dictionary<string, object>() {
                     {"cmd", "join"}
                 };
-                SendData(join);
+                SendData(join, (object result) => {
+                    Debug.Log("Result from join: " + result);
+                });
             });
         }
 

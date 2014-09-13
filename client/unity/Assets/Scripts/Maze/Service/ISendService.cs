@@ -1,4 +1,4 @@
-namespace maze.service
+namespace Maze.Service
 {
     public interface ISendService
     {

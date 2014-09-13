@@ -9,7 +9,7 @@ using MiniJSON;
 
 using UnityEngine;
 
-namespace maze.service
+namespace Maze.Service
 {
     public class Service : ISendService
     {
@@ -23,7 +23,6 @@ namespace maze.service
 
         protected Socket Client;
         protected byte[] ReceiveBuffer = new byte[1024];
-        protected string ReceivedData = "";
 
         protected Thread ReceiveThread;
 
@@ -157,9 +156,18 @@ namespace maze.service
                     }
                     Debug.Log("Bytes received: " + bytesRead);
 
-                    ReceivedData = Encoding.ASCII.GetString(ReceiveBuffer, 0, bytesRead);
-                    object received = Json.Deserialize(ReceivedData);
-                    Debug.Log("Received data: " + received);
+                    string receivedString = Encoding.UTF8.GetString(ReceiveBuffer, 0, bytesRead);
+                    Debug.Log("String received: " + receivedString);
+                    object receivedObject = Json.Deserialize(receivedString);
+                    Dictionary<string, object> receivedData = receivedObject as Dictionary<string, object>;
+                    if (receivedData.ContainsKey("rid"))
+                    {
+                        int rid = Convert.ToInt32(receivedData["rid"]);
+                        if (ResponseCallbacks.ContainsKey(rid))
+                        {
+                            ResponseCallbacks[rid](receivedData);
+                        }
+                    }
 
                 }
                 catch (Exception e)
