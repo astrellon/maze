@@ -1,8 +1,12 @@
 class Processor:
 
     def join_handle(self, input):
+        if self.world is None:
+            return {
+                    "world": None
+            }
         return {
-            "welcome_to": self.world.name
+            "world": self.world.name
         }
 
     engine = None
@@ -10,8 +14,8 @@ class Processor:
 
     @property
     def world(self):
-        if engine is not None:
-            return engine.world
+        if self.engine is not None:
+            return self.engine.world
         return None
 
     def __init__(self, engine):
@@ -31,24 +35,24 @@ class Processor:
         return returned
 
     def handle(self, input):
-        resp = None
-        error = None
+
+        cmd = None
+        if "cmd" in input:
+            cmd = input["cmd"]
+        else:
+            return self.make_response(None, "no cmd in command", input)
 
         data = None
-        try:
+        if "data" in input:
             data = input["data"]
-        except e as BaseException:
-            error = "no data in command"
 
-        if data is not None:
-            try:
-                if data["cmd"] in self.handlers:
-                    resp = self.handlers[data["cmd"]](input);
+        resp = None
+        error = None
+        try:
+            if cmd in self.handlers:
+                resp = self.handlers[cmd](data);
 
-            except e as BaseException: 
-                error = "exception executing command: " + str(e)
+        except BaseException as e: 
+            error = "exception executing command: " + str(e)
 
-        if resp is None:
-            error = "unknown input"
-
-        return self.make_response(resp, error, input);
+        return self.make_response(resp, error, input)

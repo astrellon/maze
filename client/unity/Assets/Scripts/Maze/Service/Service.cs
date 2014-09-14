@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Maze.Service
 {
-    public class Service : ISendService
+    public class Service
     {
         public event ConnectedCallback OnConnect;
 
@@ -48,7 +48,7 @@ namespace Maze.Service
 
             try
             {
-                IPHostEntry ipHostInfo = Dns.Resolve(Host);
+                IPHostEntry ipHostInfo = Dns.GetHostEntry(Host);
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, Port);
 
@@ -95,35 +95,21 @@ namespace Maze.Service
             Client.Close();        
         }
 
-        public void SendData(object data, ResponseCallback callback = null)
+        public void Send(string cmd, object data, ResponseCallback callback = null)
         {
-            Debug.Log("Sending data");
-            SendString(Json.Serialize(data), callback);
-        }
-        public void SendString(string data, ResponseCallback callback = null)
-        {
-            Debug.Log("About to send string: " + data);
-            StringBuilder builder = new StringBuilder();
-            if (callback == null)
-            {
-                builder.Append("{\"data\":");
-                builder.Append(data);
-                builder.Append('}');
-            }
-            else
+            Dictionary<string, object> output = new Dictionary<string, object>();
+            output["data"] = data;
+            output["cmd"] = cmd;
+            if (callback != null)
             {
                 int id = GetNextCallback();
                 ResponseCallbacks[id] = callback;
-                builder.Append("{\"id\":");
-                builder.Append(id);
-                builder.Append(", \"data\":");
-                builder.Append(data);
-                builder.Append('}');
+                output["id"] = id;
             }
-            string toSend = builder.ToString();
+
+            string toSend = Json.Serialize(output);
             Debug.Log("Sending data: " + toSend);
             byte[] bytes = Encoding.ASCII.GetBytes(toSend);
-
             Client.BeginSend(bytes, 0, bytes.Length, 0, new AsyncCallback(SendCallback), Client);
         }
 
