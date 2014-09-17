@@ -14,6 +14,7 @@ namespace Maze.Service
     public class Service
     {
         public event ConnectedCallback OnConnect;
+        public event ResponseCallback OnData;
 
         public string Host { get; protected set; }
         public int Port { get; protected set; }
@@ -143,7 +144,12 @@ namespace Maze.Service
                     Debug.Log("Bytes received: " + bytesRead);
 
                     string receivedString = Encoding.UTF8.GetString(ReceiveBuffer, 0, bytesRead);
+                    if (OnData != null)
+                    {
+                        OnData(receivedString);
+                    }
                     Debug.Log("String received: " + receivedString);
+                    /*
                     object receivedObject = Json.Deserialize(receivedString);
                     Dictionary<string, object> receivedData = receivedObject as Dictionary<string, object>;
                     if (receivedData.ContainsKey("rid"))
@@ -154,6 +160,7 @@ namespace Maze.Service
                             ResponseCallbacks[rid](receivedData);
                         }
                     }
+                    */
 
                 }
                 catch (Exception e)

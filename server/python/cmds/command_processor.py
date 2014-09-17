@@ -1,14 +1,5 @@
 class Processor:
 
-    def join_handle(self, input):
-        if self.world is None:
-            return {
-                    "world": None
-            }
-        return {
-            "world": self.world.name
-        }
-
     engine = None
     handlers = {}
 
@@ -20,8 +11,10 @@ class Processor:
 
     def __init__(self, engine):
         self.engine = engine
+        self.add_handlers()
 
-        self.handlers["join"] = self.join_handle
+    def add_handler(self, name, handler):
+        self.handlers[name] = handler
 
     def make_response(self, resp, error, input):
         returned = {
@@ -56,3 +49,25 @@ class Processor:
             error = "exception executing command: " + str(e)
 
         return self.make_response(resp, error, input)
+
+    # -- HANDLERS --
+    def add_handlers(self):
+        self.add_handler("join_server", self.join_server_handler)
+        self.add_handler("join_world", self.join_world_handle)
+
+    def join_server_handler(self, input):
+        return {
+            "name": self.engine.name,
+            "description": self.engine.description,
+            "version": self.engine.version
+        }
+
+    def join_world_handle(self, input):
+        if self.world is None:
+            return {
+                    "world": None
+            }
+        return {
+            "world": self.world.name
+        }
+
