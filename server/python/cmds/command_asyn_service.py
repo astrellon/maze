@@ -11,6 +11,7 @@ class AsynServer(asyncore.dispatcher):
         self.listen(1)
         self.running = False
         self.connections = []
+        self.processor = engine.processor
 
     def start(self):
         self.running = True
@@ -25,13 +26,11 @@ class AsynServer(asyncore.dispatcher):
         print("Connection from: ", address)
         conn = Handler(socket, address, self)
         self.connections.append(conn)
-        self.broadcast("New player: " + str(address))
 
     def broadcast(self, message):
         print("Broadcasting new player: ", len(self.connections))
         for conn in self.connections:
             conn.write(message)
-            
 
     def shutdown(self):
         self.close()
@@ -43,14 +42,18 @@ class Handler(asyncore.dispatcher):
 
     def __init__(self, socket, address, server):
         asyncore.dispatcher.__init__(self, socket)
+        self.player = None
         self.address = address
         self.server = server
         self.obuffer = []
 
     def write(self, data):
         try:
-            print("Appending data for: ", self.address)
-            self.obuffer.append(bytes(data, 'utf8'))
+            if isinstance(data, str):
+                self.obuffer.append(bytes(data, 'utf8'))
+            else:
+                self.obuffer.append(bytes(json.dumps(data), 'utf8'))
+
         except BaseException as e:
             print("Error appending output buffer: ", e)
 
@@ -64,7 +67,24 @@ class Handler(asyncore.dispatcher):
             print("No data given, closing connection")
             self.close()
         else:
-            print("Outbuffer: ", data)
+            decoded = data.decode("utf-8")
+            data_json = None
+            try:
+                data_json = json.loads(decoded)
+            except BaseException as e:
+                self.write({
+                    "error": str(e)
+                })
+                return
+                
+            try:
+                response = self.server.processor.handle(self, data_json)
+                if response is not None:
+                    self.write(response)
+            except BaseException as e:
+                self.write({
+                    "error": str(e)
+                })
 
     def handle_close(self):
         self.server.connections.remove(self)
@@ -73,16 +93,15 @@ class Handler(asyncore.dispatcher):
         return len(self.obuffer) > 0
 
     def handle_write(self):
-        if len(self.obuffer) == 0:
-            return
-        
-        if self.obuffer[0] is None:
-            self.close()
-            return
+        while len(self.obuffer) > 0:
+            if self.obuffer[0] is None:
+                self.close()
+                return
 
-        sent = self.send(self.obuffer[0])
-        if sent >= len(self.obuffer[0]):
-            self.obuffer.pop(0)
-        else:
-            self.obuffer[0] = self.obuffer[0][sent:]
+            sent = self.send(self.obuffer[0])
+            if sent >= len(self.obuffer[0]):
+                self.obuffer.pop(0)
+            else:
+                self.obuffer[0] = self.obuffer[0][sent:]
+                break
 

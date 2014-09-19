@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Maze.Service;
+using MiniJSON;
 
 public class Server : MonoBehaviour {
 
@@ -31,8 +32,8 @@ public class Server : MonoBehaviour {
                 log += "\n" + data.ToString();
         });
         Client.Connect(() => {
-            Client.Send("join_server", null, (object result) => {
-                Debug.Log("Result from join: " + result);
+            Client.Send("server_info", null, (object result) => {
+                Debug.Log("Result from server: " + Json.Serialize(result));
             });
         });
 	}

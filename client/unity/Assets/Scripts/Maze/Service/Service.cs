@@ -149,18 +149,23 @@ namespace Maze.Service
                         OnData(receivedString);
                     }
                     Debug.Log("String received: " + receivedString);
-                    /*
-                    object receivedObject = Json.Deserialize(receivedString);
-                    Dictionary<string, object> receivedData = receivedObject as Dictionary<string, object>;
-                    if (receivedData.ContainsKey("rid"))
+                    try
                     {
-                        int rid = Convert.ToInt32(receivedData["rid"]);
-                        if (ResponseCallbacks.ContainsKey(rid))
+                        object receivedObject = Json.Deserialize(receivedString);
+                        Dictionary<string, object> receivedData = receivedObject as Dictionary<string, object>;
+                        if (receivedData.ContainsKey("rid"))
                         {
-                            ResponseCallbacks[rid](receivedData);
+                            int rid = Convert.ToInt32(receivedData["rid"]);
+                            if (ResponseCallbacks.ContainsKey(rid))
+                            {
+                                ResponseCallbacks[rid](receivedData);
+                            }
                         }
                     }
-                    */
+                    catch (Exception e)
+                    {
+                        Debug.Log("Exception parsing repsonse: " + e.ToString());
+                    }
 
                 }
                 catch (Exception e)

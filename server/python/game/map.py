@@ -2,13 +2,11 @@ import game.tile
 
 class Map:
 
-    _data = []
-    _width = 0
-    _height = 0
-    _world = None
-
     def __init__(self, world):
         self._world = world
+        self._data = []
+        self._width = 0
+        self._height = 0
 
     def init_map(self, width, height):
         self._width = width

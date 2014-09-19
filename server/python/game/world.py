@@ -6,16 +6,16 @@ import game.tiles
 
 class World:
 
-    name = "Maze"
-
-    _maps = {}
-    _base_maps = {}
-    _engine = None
-    _tile_manager = None
-
     def __init__(self, engine):
         self._engine = engine
         self._tile_manager = game.tile.TileManager(self)
+
+        self.name = "Maze"
+
+        self._maps = {}
+        self._base_maps = {}
+        self._players = []
+        self._game_objects = {}
 
     @property
     def tile_manager(self):
@@ -69,6 +69,17 @@ class World:
     def save_world(self):
         os.mkdir("worlds/" + name)
 
+    def add_player(self, network_handler):
+        player = Player(self._engine, network_handler)
+        self._players.append(player)
+        self.add_game_object(player)
+        return player
+
+    def add_game_object(self, obj):
+        self._game_objects.append(obj)
+        self._engine.server.broadcast(obj.create_for_network())
+        return obj
+
     def serialise(self):
         world = {}
         maps = {}
@@ -78,5 +89,4 @@ class World:
             maps[map_name] = self._maps[map_name].serialise()
 
         print("Serialised world: ", maps)
-
 

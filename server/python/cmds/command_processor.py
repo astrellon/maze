@@ -1,8 +1,5 @@
 class Processor:
 
-    engine = None
-    handlers = {}
-
     @property
     def world(self):
         if self.engine is not None:
@@ -10,6 +7,7 @@ class Processor:
         return None
 
     def __init__(self, engine):
+        self.handlers = {}
         self.engine = engine
         self.add_handlers()
 
@@ -27,7 +25,7 @@ class Processor:
 
         return returned
 
-    def handle(self, input):
+    def handle(self, network_handler, input):
 
         cmd = None
         if "cmd" in input:
@@ -42,32 +40,53 @@ class Processor:
         resp = None
         error = None
         try:
+            print("Looking for cmd ", cmd)
             if cmd in self.handlers:
-                resp = self.handlers[cmd](data);
+                resp = self.handlers[cmd](network_handler, data);
+            else:
+                error = "Cannot find cmd '" + cmd + "'"
 
         except BaseException as e: 
             error = "exception executing command: " + str(e)
 
+        print("Responding with: ", error, " | ", resp)
         return self.make_response(resp, error, input)
 
     # -- HANDLERS --
     def add_handlers(self):
-        self.add_handler("join_server", self.join_server_handler)
+        self.add_handler("server_info", self.server_info_handler)
         self.add_handler("join_world", self.join_world_handle)
 
-    def join_server_handler(self, input):
+    def server_info_handler(self, handler, input):
         return {
             "name": self.engine.name,
             "description": self.engine.description,
             "version": self.engine.version
         }
 
-    def join_world_handle(self, input):
-        if self.world is None:
+    def join_world_handle(self, handler, input):
+        if "name" not in input:
             return {
-                    "world": None
+                "error": "Need a name to join a world"
             }
+
+            """
+        handler.server.broadcast({
+            "cmd": "new_player",
+            "data": {
+                "name": input["name"]
+            }
+        })
+        """
+
+        world_name = None
+        if self.world is not None:
+            world_name = self.world.name
+
+        player = self.world.add_player(handler)
+        
         return {
-            "world": self.world.name
+            "world": world_name,
+            "player": player.id
         }
 

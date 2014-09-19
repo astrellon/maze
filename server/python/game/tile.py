@@ -1,20 +1,15 @@
 class Tile:
     
-    _name = "none"
-    walkable = True
-    
-    @property
-    def name(self):
-        return self._name
-
     def __init__(self, name, walkable=True):
         self._name = name
         self.walkable = walkable
 
+    @property
+    def name(self):
+        return self._name
+
 
 class TileInstance:
-    tile = None
-    height = 0.0
 
     def __init__(self, tile, height = 0.0):
         self.tile = tile
@@ -31,8 +26,10 @@ class TileInstance:
 
 
 class TileManager:
-    _tiles = {}
-    _world = None
+
+    def __init__(self, world):
+        self._world = world
+        self._tiles = {}
 
     @property
     def tiles(self):
@@ -41,9 +38,6 @@ class TileManager:
     @property
     def world(self):
         return self._world
-
-    def __init__(self, world):
-        self._world = world
 
     def add_tile(self, tile):
         print("Adding tile: ", tile.name, tile)

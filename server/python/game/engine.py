@@ -2,25 +2,26 @@ import cmds.command_service
 import cmds.command_asyn_service
 import cmds.command_processor
 import game.world
+import game.game_object
 import threading
 import time
 
 class Engine:
-    world = None
 
-    name = "Server Name"
-    description = "Server description"
-    version = "0.0.1"
-    server = None
-    processor = None
-    host = "0.0.0.0"
-    port = 9091
-    running = False
+    def __init__(self):
+        self.world = None
+
+        self.name = "Server Name"
+        self.description = "Server description"
+        self.version = "0.0.1"
+        self.server = None
+        self.processor = None
+        self.host = "0.0.0.0"
+        self.port = 9091
+        self.running = False
 
     def setup(self):
-        #self.server = cmds.command_service.TCPServer((self.host, self.port), cmds.command_service.Handler)
         self.processor = cmds.command_processor.Processor(self)
-        #self.server.set_engine_processor(self, self.processor)
 
     def start_server_thread(self):
         
