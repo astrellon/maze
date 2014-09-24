@@ -1,8 +1,5 @@
-import cmds.command_service
-import cmds.command_asyn_service
-import cmds.command_processor
-import game.world
-import game.game_object
+import cmds
+import game
 import threading
 import time
 
@@ -21,12 +18,12 @@ class Engine:
         self.running = False
 
     def setup(self):
-        self.processor = cmds.command_processor.Processor(self)
+        self.processor = cmds.Processor(self)
 
     def start_server_thread(self):
         
         print("Starting server on: " + self.host + ":" + str(self.port))
-        self.server = cmds.command_asyn_service.AsynServer(self.host, self.port, self)
+        self.server = cmds.AsynService(self.host, self.port, self)
 
         # Start a thread with the server -- that thread will then start one
         # more thread for each request
@@ -50,10 +47,10 @@ class Engine:
 
 
     def create_world(self):
-        self.world = game.world.World(engine)
+        self.world = game.World(engine)
         self.world.setup()
 
         self.world.load_maps()
-        #self.world.create_map("maps.map1", "testmap")
+        self.world.create_map("maps.map1", "testmap")
         #self.world.serialise()
 

@@ -55,19 +55,38 @@ class Processor:
     # -- HANDLERS --
     def add_handlers(self):
         self.add_handler("server_info", self.server_info_handler)
-        self.add_handler("join_world", self.join_world_handle)
+        self.add_handler("join_server", self.join_server_handler)
+        self.add_handler("join_world", self.join_world_handler)
+        self.add_handler("create_world", self.create_world_handler)
 
     def server_info_handler(self, handler, input):
+        world_name = None
+        if self.world is not None:
+            world_name = self.world.name
         return {
             "name": self.engine.name,
             "description": self.engine.description,
-            "version": self.engine.version
+            "version": self.engine.version,
+            "current_world": world_name
         }
 
-    def join_world_handle(self, handler, input):
+    def join_server_handler(self, handler, input):
+
+        pass
+
+    def create_world_handler(self, handler, input):
+        if self.engine.world is not None:
+            return {
+                "error": "World already exists on server."
+            }
+        
+        self.engine.create_world()
+        self.world.create_map("maps.map1", "testmap")
+
+    def join_world_handler(self, handler, input):
         if "name" not in input:
             return {
-                "error": "Need a name to join a world"
+                "error": "Need a player name to join a world"
             }
 
             """

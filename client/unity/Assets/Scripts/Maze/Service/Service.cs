@@ -146,19 +146,19 @@ namespace Maze.Service
                     string receivedString = Encoding.UTF8.GetString(ReceiveBuffer, 0, bytesRead);
                     if (OnData != null)
                     {
-                        OnData(receivedString);
+                        OnData(null, receivedString);
                     }
                     Debug.Log("String received: " + receivedString);
                     try
                     {
                         object receivedObject = Json.Deserialize(receivedString);
-                        Dictionary<string, object> receivedData = receivedObject as Dictionary<string, object>;
-                        if (receivedData.ContainsKey("rid"))
+                        Response resp = new Response(receivedObject);
+                        if (resp.Result != null && resp.Result.ContainsKey("rid"))
                         {
-                            int rid = Convert.ToInt32(receivedData["rid"]);
+                            int rid = Convert.ToInt32(resp.Result["rid"]);
                             if (ResponseCallbacks.ContainsKey(rid))
                             {
-                                ResponseCallbacks[rid](receivedData);
+                                ResponseCallbacks[rid](resp, receivedObject);
                             }
                         }
                     }

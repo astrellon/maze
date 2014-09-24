@@ -1,9 +1,8 @@
 import asyncore
 import socket
 import json
-import cmds.command_processor
 
-class AsynServer(asyncore.dispatcher):
+class AsynService(asyncore.dispatcher):
     def __init__(self, host, port, engine):
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -46,6 +45,7 @@ class Handler(asyncore.dispatcher):
         self.address = address
         self.server = server
         self.obuffer = []
+        self.user = None
 
     def write(self, data):
         try:

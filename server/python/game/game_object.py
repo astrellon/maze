@@ -1,3 +1,5 @@
+import game.math
+
 class GameObject:
     _next_id = 0
 
@@ -7,6 +9,8 @@ class GameObject:
         self._display_name = "Noname"
         self._engine = engine
         self._type = "obj"
+        self._map = None
+        self._position = math.Vector4()
         self._created = {}
 
     @property
@@ -37,14 +41,18 @@ class GameObject:
     def display_name(self):
         return self._display_name
 
-    @property
     def create_for_network(self):
         return {
             "cmd": "new_obj",
-            "data": {
-                "id": self.id,
-                "name": self.display_name,
-                "type": self.type
-            }
+            "data": self.serialise()
+        }
+
+    def serialise(self):
+        return {
+            "id": self.id,
+            "name": self.display_name,
+            "type": self.type,
+            "map": self._map.name,
+            "position": self._position.serialise()
         }
 

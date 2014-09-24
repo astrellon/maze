@@ -69,8 +69,8 @@ class World:
     def save_world(self):
         os.mkdir("worlds/" + name)
 
-    def add_player(self, network_handler):
-        player = Player(self._engine, network_handler)
+    def add_player(self, user):
+        player = PlayerObject(self._engine, user)
         self._players.append(player)
         self.add_game_object(player)
         return player
@@ -83,10 +83,15 @@ class World:
     def serialise(self):
         world = {}
         maps = {}
+        players = []
         world["maps"] = maps
+        world["players"] = players
 
         for map_name in self._maps.keys():
             maps[map_name] = self._maps[map_name].serialise()
 
-        print("Serialised world: ", maps)
+        for player in self._players:
+            players.append(player.serialise())
+
+        return world
 

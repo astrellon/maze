@@ -28,12 +28,26 @@ public class Server : MonoBehaviour {
 	void Start ()
     {
         Client = new Service(Host, Port);
-        Client.OnData += new ResponseCallback((object data) => {
+        Client.OnData += new ResponseCallback((Response resp, object data) => {
                 log += "\n" + data.ToString();
         });
         Client.Connect(() => {
-            Client.Send("server_info", null, (object result) => {
-                Debug.Log("Result from server: " + Json.Serialize(result));
+            Client.Send("server_info", null, (Response resp, object result) => {
+                if (resp.IsError)
+                {
+                    Debug.Log("Error getting server info");
+                }
+                else if (resp.HasValue("current_would"))
+                {
+                    Debug.Log("Joining world");
+                }
+                else
+                {
+                    Debug.Log("Creating world");
+                    Client.Send("create_world", null, (Response resp, object result) => {
+                        
+                    });
+                }
             });
         });
 	}

@@ -1,5 +1,3 @@
-import game.tile
-
 class Map:
 
     def __init__(self, world):
@@ -8,41 +6,35 @@ class Map:
         self._width = 0
         self._height = 0
 
-    def init_map(self, width, height):
+    def init_map(self, width, height, type="grass", tile_height=0.0):
         self._width = width
         self._height = height
 
         tm = self._world.tile_manager
-        """
-        for x in range(width):
-            col = []
-            self._data.insert(-1, col)
-            for y in range(height):
-                col.insert(-1, tm.create_inst("grass"))
-                """
+        
         self._data = [None] * (width * height)
         for x in range(width * height):
-            inst = tm.create_inst("grass")
+            inst = tm.create_inst(type, tile_height)
             self._data[x] = inst
 
         self.create_map()
 
-    def add_border(self, type="map_border"):
+    def add_border(self, type="map_border", height=None):
         x = 0
         top = self.height - 1
         while x < self.width:
-            self.set_map(x, 0, type)
-            self.set_map(x, top, type)
+            self.set_map(x, 0, type, height)
+            self.set_map(x, top, type, height)
             x = x + 1
 
         y = 0
         right = self.width - 1
         while y < self.height:
-            self.set_map(0, y, type)
-            self.set_map(right, y, type)
+            self.set_map(0, y, type, height)
+            self.set_map(right, y, type, height)
             y = y + 1
 
-    def set_map(self, x, y, inst, height = 0.0):
+    def set_map(self, x, y, inst, height=None):
         pos = y * self.width + x
         if isinstance(inst, str):
             self.data[pos] = self._world.tile_manager.create_inst(inst, height)

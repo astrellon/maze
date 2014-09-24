@@ -1,12 +1,16 @@
-import game.game_object.GameObject
+import game
 
-class Player(game.game_object.GameObject):
+class PlayerObject(game.GameObject):
 
-    def __init__(self, engine, handler):
-        game.game_object.GameObject.__init__(self, engine)
-        self._network_handler = handler
+    def __init__(self, engine, user):
+        game.GameObject.__init__(self, engine)
+        self._user = user
+
+    @property
+    def user(self):
+        return self._user
 
     @property
     def network_handler(self):
-        return self._network_handler
+        return self._user.network_handler
 

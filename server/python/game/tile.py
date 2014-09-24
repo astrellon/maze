@@ -44,6 +44,13 @@ class TileManager:
         self._tiles[tile.name] = tile
 
     def create_inst(self, name, height = 0.0):
+        # Create instance from instance.
+        if height is None:
+            height = 0.0
+
+        if isinstance(name, TileInstance):
+            return TileInstance(name.tile, height)
+        
         if name in self._tiles:
             return TileInstance(self._tiles[name], height)
         return None
