@@ -3,6 +3,9 @@ class User:
     @property
     def name(self):
         return self._name
+    @property
+    def name(self, name):
+        self._name = name
 
     @property
     def network_handler(self):
@@ -15,7 +18,12 @@ class User:
 
 class Users:
 
-    def __init__(self):
+    @property
+    def engine(self):
+        return self._engine
+
+    def __init__(self, engine):
+        self._engine = engine
         self._users = {}
 
     def add_user(self, network_handler):

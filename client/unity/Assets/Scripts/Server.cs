@@ -14,6 +14,11 @@ public class Server : MonoBehaviour {
     private int Counter = 0;
     private string log = "";
 
+    public string ServerName { get; protected set; }
+    public string ServerDescription { get; protected set; }
+    public string ServerVersion{ get; protected set; }
+    public string ServerWorldName { get; protected set; }
+
     public GUIText Logger = null;
 
     void OnGUI() {
@@ -37,20 +42,57 @@ public class Server : MonoBehaviour {
                 {
                     Debug.Log("Error getting server info");
                 }
-                else if (resp.HasValue("current_would"))
-                {
-                    Debug.Log("Joining world");
-                }
                 else
                 {
-                    Debug.Log("Creating world");
-                    Client.Send("create_world", null, (Response resp, object result) => {
-                        
+                    ServerName = resp.GrabValue<string>("name", null);
+                    ServerDescription = resp.GrabValue<string>("description", null);
+                    ServerVersion = resp.GrabValue<string>("version", null);
+                    ServerWorldName = resp.GrabValue<string>("current_world", null);
+                    
+                    Client.Send("join_server", new Hashtable() {
+                        { "name", "Crazy name" }
+                    }, (Response respJoin, object resultJoin) => {
+                        if (respJoin.IsError)
+                        {
+                            Debug.Log("Error joining server: " + respJoin.ErrorMessage);
+                        }
+                        else
+                        {
+                            if (ServerWorldName == null)
+                            {
+                                CreateWorld();
+                            }
+                            else
+                            {
+                                JoinWorld();
+                            }
+                        }
                     });
                 }
             });
         });
 	}
+    protected void CreateWorld()
+    {
+        Client.Send("create_world", null, (Response resp, object result) => {
+            if (resp.IsError)
+            {
+                Debug.Log("Error creating world.");
+            }
+            else
+            {
+                JoinWorld();
+            }
+        });
+    }
+    protected void JoinWorld()
+    {
+        Client.Send("join_world", new Hashtable() {
+            { "name", "Whut" }
+        }, (Response resp, object result) => {
+            Debug.Log("Joined world");
+        });
+    }
 	
 	// Update is called once per frame
 	void Update ()

@@ -1,3 +1,6 @@
+import cmds
+import traceback
+
 class Processor:
 
     @property
@@ -45,6 +48,7 @@ class Processor:
                 resp = self.handlers[cmd](network_handler, data);
             else:
                 error = "Cannot find cmd '" + cmd + "'"
+                traceback.print_exc()
 
         except BaseException as e: 
             error = "exception executing command: " + str(e)
@@ -71,10 +75,20 @@ class Processor:
         }
 
     def join_server_handler(self, handler, input):
-
-        pass
+        handler.user = self.engine.users.add_user(handler)
+        if "name" in input:
+            handler.user._name = input["name"]
+        
+        return {
+            "result": "success"
+        }
 
     def create_world_handler(self, handler, input):
+        if handler.user is None:
+            return {
+                "Cannot create world without joining server."
+            }
+        
         if self.engine.world is not None:
             return {
                 "error": "World already exists on server."
@@ -84,28 +98,19 @@ class Processor:
         self.world.create_map("maps.map1", "testmap")
 
     def join_world_handler(self, handler, input):
-        if "name" not in input:
+        if handler.user is None:
             return {
-                "error": "Need a player name to join a world"
+                "error": "Cannot join world without joining server."
+            }
+        if self.world is None:
+            return {
+                "error": "Cannot join world as one is not loaded."
             }
 
-            """
-        handler.server.broadcast({
-            "cmd": "new_player",
-            "data": {
-                "name": input["name"]
-            }
-        })
-        """
-
-        world_name = None
-        if self.world is not None:
-            world_name = self.world.name
-
-        player = self.world.add_player(handler)
+        player = self.world.add_player(handler.user)
         
         return {
-            "world": world_name,
+            "world": self.world.serialise(),
             "player": player.id
         }
 

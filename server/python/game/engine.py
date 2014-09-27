@@ -13,12 +13,14 @@ class Engine:
         self.version = "0.0.1"
         self.server = None
         self.processor = None
+        self.users = None
         self.host = "0.0.0.0"
         self.port = 9091
         self.running = False
 
     def setup(self):
         self.processor = cmds.Processor(self)
+        self.users = cmds.Users(self)
 
     def start_server_thread(self):
         
