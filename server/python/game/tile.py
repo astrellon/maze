@@ -8,6 +8,11 @@ class Tile:
     def name(self):
         return self._name
 
+    def serialise(self):
+        return {
+            "walkable": self.walkable
+        }
+
 
 class TileInstance:
 
@@ -54,4 +59,14 @@ class TileManager:
         if name in self._tiles:
             return TileInstance(self._tiles[name], height)
         return None
+
+    def serialise(self):
+        tiles = {}
+
+        for tile_name in self._tiles.keys():
+            tiles[tile_name] = self._tiles[tile_name].serialise()
+        
+        return {
+            "tiles": tiles
+        }
 

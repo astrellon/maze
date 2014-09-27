@@ -23,7 +23,14 @@ namespace Maze.Service
         public bool Connected { get; protected set; }
 
         protected Socket Client;
-        protected byte[] ReceiveBuffer = new byte[1024];
+        // Buffer is 10kb, should be enough for most things to work in one go.
+        protected byte[] ReceiveBuffer = new byte[1048576];
+        // The total buffer, as in this will keep acculating while
+        // it fails to be parsed as JSON. Might need some kind of protection against
+        // this continusing to acculate out of control if something goes wrong.
+        // But for now this should mean that we can keep receiving incomplete data from the server
+        // until it's all here and then process it.
+        protected StringBuilder ReceivedBufferTotal = new StringBuilder();
 
         protected Thread ReceiveThread;
 
@@ -149,10 +156,13 @@ namespace Maze.Service
                         OnData(null, receivedString);
                     }
                     Debug.Log("String received: " + receivedString);
+                    ReceivedBufferTotal.Append(receivedString);
                     try
                     {
-                        object receivedObject = Json.Deserialize(receivedString);
+                        object receivedObject = Json.Deserialize(ReceivedBufferTotal.ToString());
                         Response resp = new Response(receivedObject);
+                        ReceivedBufferTotal = new StringBuilder();
+                        
                         if (resp.Result != null && resp.Result.ContainsKey("rid"))
                         {
                             int rid = Convert.ToInt32(resp.Result["rid"]);

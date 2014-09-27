@@ -10,7 +10,7 @@ class GameObject:
         self._engine = engine
         self._type = "obj"
         self._map = None
-        self._position = math.Vector4()
+        self._position = game.math.Vector4()
         self._created = {}
 
     @property
@@ -52,7 +52,7 @@ class GameObject:
             "id": self.id,
             "name": self.display_name,
             "type": self.type,
-            "map": self._map.name,
+            "map": self._map.name if self._map is not None else None,
             "position": self._position.serialise()
         }
 

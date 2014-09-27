@@ -49,7 +49,7 @@ class Engine:
 
 
     def create_world(self):
-        self.world = game.World(engine)
+        self.world = game.World(self)
         self.world.setup()
 
         self.world.load_maps()

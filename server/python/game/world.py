@@ -70,13 +70,13 @@ class World:
         os.mkdir("worlds/" + name)
 
     def add_player(self, user):
-        player = PlayerObject(self._engine, user)
+        player = game.PlayerObject(self._engine, user)
         self._players.append(player)
         self.add_game_object(player)
         return player
 
     def add_game_object(self, obj):
-        self._game_objects.append(obj)
+        self._game_objects[obj.id] = obj
         self._engine.server.broadcast(obj.create_for_network())
         return obj
 

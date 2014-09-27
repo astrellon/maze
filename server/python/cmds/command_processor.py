@@ -52,6 +52,7 @@ class Processor:
 
         except BaseException as e: 
             error = "exception executing command: " + str(e)
+            traceback.print_exc()
 
         print("Responding with: ", error, " | ", resp)
         return self.make_response(resp, error, input)
@@ -111,6 +112,7 @@ class Processor:
         
         return {
             "world": self.world.serialise(),
+            "tiles": self.world.tile_manager.serialise(),
             "player": player.id
         }
 
