@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Maze.Service;
+using Maze.Game;
 using MiniJSON;
 
 public class Server : MonoBehaviour {
@@ -18,6 +19,8 @@ public class Server : MonoBehaviour {
     public string ServerDescription { get; protected set; }
     public string ServerVersion{ get; protected set; }
     public string ServerWorldName { get; protected set; }
+
+    public World ServerWorld { get; protected set; }
 
     public GUIText Logger = null;
 
@@ -90,7 +93,14 @@ public class Server : MonoBehaviour {
         Client.Send("join_world", new Hashtable() {
             { "name", "Whut" }
         }, (Response resp, object result) => {
+            if (resp.IsError)
+            {
+                Debug.Log("Error joining world");
+                return;
+            }
             Debug.Log("Joined world");
+            ServerWorld = new World();
+            ServerWorld.Deserialise(resp.Result["result"] as Dictionary<string, object>);
         });
     }
 	

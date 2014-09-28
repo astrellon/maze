@@ -10,6 +10,7 @@ class Tile:
 
     def serialise(self):
         return {
+            "name": self.name,
             "walkable": self.walkable
         }
 
@@ -61,10 +62,10 @@ class TileManager:
         return None
 
     def serialise(self):
-        tiles = {}
+        tiles = []
 
         for tile_name in self._tiles.keys():
-            tiles[tile_name] = self._tiles[tile_name].serialise()
+            tiles.append(self._tiles[tile_name].serialise())
         
         return {
             "tiles": tiles
