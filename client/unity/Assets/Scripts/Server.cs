@@ -10,6 +10,7 @@ public class Server : MonoBehaviour {
 
     public string Host = "localhost";
     public int Port = 9091;
+    public MapRenderer MainMap;
 
     private Service Client;
     private int Counter = 0;
@@ -21,6 +22,7 @@ public class Server : MonoBehaviour {
     public string ServerWorldName { get; protected set; }
 
     public World ServerWorld { get; protected set; }
+    private bool updateMapRenderer = false;
 
     public GUIText Logger = null;
 
@@ -101,6 +103,7 @@ public class Server : MonoBehaviour {
             Debug.Log("Joined world");
             ServerWorld = new World();
             ServerWorld.Deserialise(resp.Result["result"] as Dictionary<string, object>);
+            updateMapRenderer = true;
         });
     }
 	
@@ -111,6 +114,12 @@ public class Server : MonoBehaviour {
         {
             Logger.text += log;
             log = "";
+        }
+        if (MainMap != null && updateMapRenderer)
+        {
+            updateMapRenderer = false;
+            MainMap.CurrentMap = ServerWorld.FirstMap;
+            MainMap.RenderMap();
         }
 	}
 

@@ -19,7 +19,41 @@ class TileInstance:
 
     def __init__(self, tile, height = 0.0):
         self.tile = tile
-        self.height = height
+        self.heights = [0, 0, 0, 0]
+        
+    def set_heights(self, height):
+        self.heights[0] = height
+        self.heights[1] = height
+        self.heights[2] = height
+        self.heights[3] = height
+
+    @property
+    def heightBL(self):
+        return self.heights[0]
+    @heightBL.setter
+    def heightBL(self, height):
+        self.heights[0] = height
+
+    @property
+    def heightBR(self):
+        return self.heights[1]
+    @heightBR.setter
+    def heightBR(self, height):
+        self.heights[1] = height
+
+    @property
+    def heightTL(self):
+        return self.heights[2]
+    @heightTL.setter
+    def heightTL(self, height):
+        self.heights[2] = height
+
+    @property
+    def heightTR(self):
+        return self.heights[3]
+    @heightTR.setter
+    def heightTR(self, height):
+        self.heights[3] = height
 
     def __str__(self):
         return "tile '" + self.tile.name + "'"
@@ -27,7 +61,7 @@ class TileInstance:
     def serialise(self):
         return {
             "name": self.tile.name,
-            "height": self.height
+            "heights": self.heights
         }
 
 

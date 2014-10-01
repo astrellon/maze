@@ -57,7 +57,7 @@ class World:
         if base_name in self._base_maps.keys():
             try:
                 self._base_maps[base_name][ "create" ](self, name)
-            except e as Exception:
+            except BaseException as e:
                 print("Error creating map: ", str(e))
         else:
             print("Unable to find base map: ", base_name)

@@ -5,14 +5,13 @@ module_name = ""
 
 class Map1(game.Map):
     def create_map(self):
-        self.add_border()
+        self.draw_rect(0, 0, self.width, self.height, "dirt")
+        """
+        for y in range(self.height):
+            for x in range(self.width):
+                self.set_height(x, y, x +y)
+                """
 
-        """
-        self.set_map(2, 2, "dirt")
-        self.set_map(2, 3, "dirt")
-        self.set_map(2, 4, "dirt")
-        self.set_map(2, 5, "dirt")
-        """
 
     @property
     def base_map(self):
@@ -25,6 +24,6 @@ def setup(world, mod_file):
 
 def create(world, name):
     gmap = Map1(world)
-    gmap.init_map(3, 3)
+    gmap.init_map(5, 3)
     world.add_map(name, gmap)
 

@@ -8,10 +8,13 @@ namespace Maze.Game
     public class World
     {
         public TileManager Tiles { get; protected set; }
+        public Dictionary<string, Map> Maps { get; protected set; }
+        public Map FirstMap = null;
 
         public World()
         {
             Tiles = new TileManager();
+            Maps = new Dictionary<string, Map>();
         }
 
         public void Deserialise(Dictionary<string, object> obj)
@@ -33,29 +36,41 @@ namespace Maze.Game
 
             if (obj.ContainsKey("world"))
             {
-                Dictionary<string, object> worldObj = obj["world"] as Dictionary<string, object>;
-                if (worldObj == null)
+                DeserialiseWorld(obj["world"] as Dictionary<string, object>);
+            }
+        }
+
+        protected void DeserialiseWorld(Dictionary<string, object> worldObj)
+        {
+            if (worldObj == null)
+            {
+                Debug.Log("No world data");
+                return;
+            }
+
+            if (worldObj.ContainsKey("maps"))
+            {
+                DeserialiseMaps(worldObj["maps"] as Dictionary<string, object>);
+            }
+        }
+
+        protected void DeserialiseMaps(Dictionary<string, object> mapObj)
+        {
+            if (mapObj == null)
+            {
+                Debug.Log("- World map data invalid");
+                return;
+            }
+            foreach (var pair in mapObj)
+            {
+                Map newMap = new Map(pair.Key, this);
+                Debug.Log("Deserialising map: " + pair.Key);
+                newMap.Deserialise(pair.Value as Dictionary<string, object>);
+                Maps[pair.Key] = newMap;
+
+                if (FirstMap == null)
                 {
-                    Debug.Log("No world data");
-                    return;
-                }
-                
-                if (worldObj.ContainsKey("maps"))
-                {
-                    Dictionary<string, object> maps = worldObj["maps"] as Dictionary<string, object>;
-                    if (maps == null)
-                    {
-                        Debug.Log("- World map data invalid");
-                    }
-                    else
-                    {
-                        foreach (var pair in maps)
-                        {
-                            Map newMap = new Map(pair.Key, this);
-                            Debug.Log("Deserialising map: " + pair.Key);
-                            newMap.Deserialise(pair.Value as Dictionary<string, object>);
-                        }
-                    }
+                    FirstMap = newMap;
                 }
             }
         }
