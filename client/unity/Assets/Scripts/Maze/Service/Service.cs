@@ -155,7 +155,6 @@ namespace Maze.Service
                     {
                         OnData(null, receivedString);
                     }
-                    Debug.Log("String received: " + receivedString);
                     ReceivedBufferTotal.Append(receivedString);
                     try
                     {

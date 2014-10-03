@@ -39,7 +39,8 @@ public class Server : MonoBehaviour {
     {
         Client = new Service(Host, Port);
         Client.OnData += new ResponseCallback((Response resp, object data) => {
-                log += "\n" + data.ToString();
+                string dataStr = data.ToString();
+                log += "\n" + dataStr.Substring(0, Math.Min(dataStr.Length, 128));
         });
         Client.Connect(() => {
             Client.Send("server_info", null, (Response resp, object result) => {
@@ -49,10 +50,20 @@ public class Server : MonoBehaviour {
                 }
                 else
                 {
+                    foreach (KeyValuePair<string, object> pair in resp.Result)
+                    {
+                        string v = "Null";
+                        if (pair.Value != null)
+                        {
+                            v = pair.Value.ToString();
+                        }
+                        Debug.Log("Info resp " + pair.Key.ToString() + ": " + v);
+                    }
                     ServerName = resp.GrabValue<string>("name", null);
                     ServerDescription = resp.GrabValue<string>("description", null);
                     ServerVersion = resp.GrabValue<string>("version", null);
                     ServerWorldName = resp.GrabValue<string>("current_world", null);
+                    Debug.Log("Server info: " + ServerName + " | " + ServerWorldName);
                     
                     Client.Send("join_server", new Hashtable() {
                         { "name", "Crazy name" }

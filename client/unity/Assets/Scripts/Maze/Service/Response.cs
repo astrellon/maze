@@ -1,3 +1,4 @@
+using UnityEngine;
 using System.Collections.Generic;
 
 namespace Maze.Service
@@ -22,10 +23,20 @@ namespace Maze.Service
         public Response(object result)
         {
             RawResult = result;
-            Result = result as Dictionary<string, object>;
-            if (Result != null)
+            Dictionary<string, object> baseResult = result as Dictionary<string, object>;
+            if (baseResult != null)
             {
-                if (Result.ContainsKey("error") && Result["error"] != null)
+                if (baseResult.ContainsKey("error") && Result["error"] != null)
+                {
+                    IsError = true;
+                }
+
+                if (baseResult.ContainsKey(""))
+                {
+                    Result = baseResult["result"] as Dictionary<string, object>;
+                    IsError = Result == null;
+                }
+                else
                 {
                     IsError = true;
                 }
@@ -40,9 +51,11 @@ namespace Maze.Service
         {
             if (!HasValue(key))
             {
+                Debug.Log("Did not find key: " + key);
                 return defaultValue;
             }
             object value = Result[key];
+            Debug.Log("Value: " + value.ToString() + " | " + value.GetType().ToString() + " | " + typeof(T).ToString());
             if (typeof(T) == value.GetType())
             {
                 return (T)value;

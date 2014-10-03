@@ -6,6 +6,7 @@ module_name = ""
 class Map1(game.Map):
     def create_map(self):
         self.draw_rect(0, 0, self.width, self.height, "dirt")
+        self.draw_rect(2, 2, self.width - 2, self.height - 2, "dirt")
         """
         for y in range(self.height):
             for x in range(self.width):
@@ -24,6 +25,6 @@ def setup(world, mod_file):
 
 def create(world, name):
     gmap = Map1(world)
-    gmap.init_map(5, 3)
+    gmap.init_map(32, 32)
     world.add_map(name, gmap)
 

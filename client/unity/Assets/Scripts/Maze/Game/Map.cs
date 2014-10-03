@@ -90,7 +90,6 @@ namespace Maze.Game
                     }
 
                     Tiles[x, y].BaseTile = OwnerWorld.Tiles.FindTile(tileObj["name"].ToString(), false);
-                    Debug.Log("Map " + x + ", " + y + ": " + Tiles[x, y].BaseTile.Name);
                     Tiles[x, y].Deserialise(tileObj);
                 }
             }

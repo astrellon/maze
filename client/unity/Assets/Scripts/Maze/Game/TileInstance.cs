@@ -47,14 +47,11 @@ namespace Maze.Game
                 }
                 else
                 {
-                    string str = "- Inst: ";
                     for (int i = 0; i < Mathf.Min(4, heights.Count); i++)
                     {
                         float value = (float)Convert.ToDouble(heights[i]);
-                        str += value.ToString() + " ";
                         Heights[i] = value;
                     }
-                    Debug.Log(str);
                 }
             }
         }

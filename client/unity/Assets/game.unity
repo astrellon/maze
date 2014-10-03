@@ -19,7 +19,7 @@ RenderSettings:
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientLight: {r: .200000003, g: .200000003, b: .200000003, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 0e9927299894c734eb476b2de2f0e64a, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 4ee48ad0d5edbc942883792f8613190f, type: 2}
   m_HaloStrength: .5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -188,7 +188,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: d5a37b72bf25f6041a1a15a899a5b353, type: 2}
+  - {fileID: 2100000, guid: cfb771ad56da12442bf72ccf34b73b46, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -311,6 +311,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8931d4cedbb10f84d833d6c76760e071, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TileMaterials:
+  - TileName: grass
+    Mat: {fileID: 2100000, guid: d5a37b72bf25f6041a1a15a899a5b353, type: 2}
+  - TileName: dirt
+    Mat: {fileID: 2100000, guid: cfb771ad56da12442bf72ccf34b73b46, type: 2}
   GridSize: 1
 --- !u!33 &1432752818
 MeshFilter:
@@ -478,7 +483,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1947896246}
-  m_LocalRotation: {x: .116977863, y: .244668424, z: -.0369593762, w: .961814761}
+  m_LocalRotation: {x: .834548295, y: -.223330602, z: -.238077819, w: .443814874}
   m_LocalPosition: {x: 7.05495262, y: 9.17558479, z: -.0252666473}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

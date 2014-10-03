@@ -45,7 +45,10 @@ class Processor:
         try:
             print("Looking for cmd ", cmd)
             if cmd in self.handlers:
-                resp = self.handlers[cmd](network_handler, data);
+                try:
+                    resp = self.handlers[cmd](network_handler, data)
+                except BaseException as e:
+                    error = str(e)
             else:
                 error = "Cannot find cmd '" + cmd + "'"
                 traceback.print_exc()
@@ -68,12 +71,13 @@ class Processor:
         world_name = None
         if self.world is not None:
             world_name = self.world.name
+
         return {
             "name": self.engine.name,
             "description": self.engine.description,
             "version": self.engine.version,
             "current_world": world_name
-        }
+        } 
 
     def join_server_handler(self, handler, input):
         handler.user = self.engine.users.add_user(handler)
@@ -86,27 +90,19 @@ class Processor:
 
     def create_world_handler(self, handler, input):
         if handler.user is None:
-            return {
-                "Cannot create world without joining server."
-            }
+            raise RuntimeError("Cannot create world without joining server.")
         
         if self.engine.world is not None:
-            return {
-                "error": "World already exists on server."
-            }
+            raise RuntimeError("World already exists on server.")
         
         self.engine.create_world()
         self.world.create_map("maps.map1", "testmap")
 
     def join_world_handler(self, handler, input):
         if handler.user is None:
-            return {
-                "error": "Cannot join world without joining server."
-            }
+            raise RuntimeError("Cannot join world without joining server.")
         if self.world is None:
-            return {
-                "error": "Cannot join world as one is not loaded."
-            }
+            raise RuntimeError("Cannot join world as one is not loaded.")
 
         player = self.world.add_player(handler.user)
         
@@ -114,5 +110,5 @@ class Processor:
             "world": self.world.serialise(),
             "tiles": self.world.tile_manager.serialise(),
             "player": player.id
-        }
+        }, None
 
