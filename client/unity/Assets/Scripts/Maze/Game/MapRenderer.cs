@@ -154,8 +154,10 @@ namespace Maze.Game
                 }
             }
 
+            Debug.Log("Tile to positions: " + tileToPositions.Count);
             foreach (var pairs in tileToPositions)
             {
+                Debug.Log("Rendering tiles for: " + pairs.Key);
                 RenderTiles(pairs.Key, pairs.Value);
             }
 

@@ -8,6 +8,10 @@ using MiniJSON;
 
 public class Server : MonoBehaviour {
 
+    //TODO
+    Add base class for MonoBehaviours that accept command responses and queues them
+    up until the next Update tick comes around
+
     public string Host = "localhost";
     public int Port = 9091;
     public MapRenderer MainMap;
@@ -50,6 +54,7 @@ public class Server : MonoBehaviour {
                 }
                 else
                 {
+                    Debug.Log("SERVER INFO!");
                     foreach (KeyValuePair<string, object> pair in resp.Result)
                     {
                         string v = "Null";
@@ -91,6 +96,8 @@ public class Server : MonoBehaviour {
     protected void CreateWorld()
     {
         Client.Send("create_world", null, (Response resp, object result) => {
+            Debug.Log("Created world");
+
             if (resp.IsError)
             {
                 Debug.Log("Error creating world.");

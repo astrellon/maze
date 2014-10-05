@@ -162,13 +162,9 @@ namespace Maze.Service
                         Response resp = new Response(receivedObject);
                         ReceivedBufferTotal = new StringBuilder();
                         
-                        if (resp.Result != null && resp.Result.ContainsKey("rid"))
+                        if (resp.Result != null && resp.ResponseId > 0)
                         {
-                            int rid = Convert.ToInt32(resp.Result["rid"]);
-                            if (ResponseCallbacks.ContainsKey(rid))
-                            {
-                                ResponseCallbacks[rid](resp, receivedObject);
-                            }
+                            ResponseCallbacks[resp.ResponseId](resp, receivedObject);
                         }
                     }
                     catch (Exception e)

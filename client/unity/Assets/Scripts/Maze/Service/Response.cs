@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 namespace Maze.Service
@@ -8,6 +9,7 @@ namespace Maze.Service
         public Dictionary<string, object> Result { get; protected set; }
         public object RawResult { get; protected set; }
         public bool IsError { get; protected set; }
+        public int ResponseId { get; protected set; }
         public string ErrorMessage
         {
             get
@@ -22,16 +24,21 @@ namespace Maze.Service
         
         public Response(object result)
         {
+            ResponseId = -1;
             RawResult = result;
             Dictionary<string, object> baseResult = result as Dictionary<string, object>;
             if (baseResult != null)
             {
-                if (baseResult.ContainsKey("error") && Result["error"] != null)
+                if (baseResult.ContainsKey("rid"))
+                {
+                    ResponseId = Convert.ToInt32(baseResult["rid"]);
+                }
+                if (baseResult.ContainsKey("error") && baseResult["error"] != null)
                 {
                     IsError = true;
                 }
 
-                if (baseResult.ContainsKey(""))
+                if (baseResult.ContainsKey("result"))
                 {
                     Result = baseResult["result"] as Dictionary<string, object>;
                     IsError = Result == null;
