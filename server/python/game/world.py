@@ -77,6 +77,7 @@ class World:
 
     def add_game_object(self, obj):
         self._game_objects[obj.id] = obj
+# Broadcasting isn't quite working here as it concatinating two different broadcasts together incorrectly
         self._engine.server.broadcast(obj.create_for_network())
         return obj
 

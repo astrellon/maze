@@ -9,8 +9,8 @@ using MiniJSON;
 public class Server : MonoBehaviour {
 
     //TODO
-    Add base class for MonoBehaviours that accept command responses and queues them
-    up until the next Update tick comes around
+    //Add base class for MonoBehaviours that accept command responses and queues them
+    //up until the next Update tick comes around
 
     public string Host = "localhost";
     public int Port = 9091;
@@ -55,7 +55,7 @@ public class Server : MonoBehaviour {
                 else
                 {
                     Debug.Log("SERVER INFO!");
-                    foreach (KeyValuePair<string, object> pair in resp.Result)
+                    foreach (KeyValuePair<string, object> pair in resp.HashResult)
                     {
                         string v = "Null";
                         if (pair.Value != null)
@@ -93,6 +93,7 @@ public class Server : MonoBehaviour {
             });
         });
 	}
+    
     protected void CreateWorld()
     {
         Client.Send("create_world", null, (Response resp, object result) => {
@@ -108,6 +109,7 @@ public class Server : MonoBehaviour {
             }
         });
     }
+
     protected void JoinWorld()
     {
         Client.Send("join_world", new Hashtable() {
@@ -120,7 +122,7 @@ public class Server : MonoBehaviour {
             }
             Debug.Log("Joined world");
             ServerWorld = new World();
-            ServerWorld.Deserialise(resp.Result["result"] as Dictionary<string, object>);
+            ServerWorld.Deserialise(resp.HashResult);
             updateMapRenderer = true;
         });
     }

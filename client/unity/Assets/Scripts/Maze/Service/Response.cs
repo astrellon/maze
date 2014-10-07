@@ -6,47 +6,49 @@ namespace Maze.Service
 {
     public class Response
     {
-        public Dictionary<string, object> Result { get; protected set; }
-        public object RawResult { get; protected set; }
+        public Dictionary<string, object> HashResult { get; protected set; }
+        public object Result { get; protected set; }
+        public Dictionary<string, object> Error { get; protected set; }
         public bool IsError { get; protected set; }
         public int ResponseId { get; protected set; }
         public string ErrorMessage
         {
             get
             {
-                if (HasValue("error"))
+                if (Error != null && Error.ContainsKey("message"))
                 {
-                    return Result["error"].ToString();
+                    return Error["message"].ToString();
+                }
+                if (IsError)
+                {
+                    return "Unknown Error";
                 }
                 return "";
             }
         }
         
-        public Response(object result)
+        public Response(Dictionary<string, object> result)
         {
             ResponseId = -1;
-            RawResult = result;
-            Dictionary<string, object> baseResult = result as Dictionary<string, object>;
-            if (baseResult != null)
+            if (result.ContainsKey("rid"))
             {
-                if (baseResult.ContainsKey("rid"))
-                {
-                    ResponseId = Convert.ToInt32(baseResult["rid"]);
-                }
-                if (baseResult.ContainsKey("error") && baseResult["error"] != null)
-                {
-                    IsError = true;
-                }
+                ResponseId = Convert.ToInt32(result["rid"]);
+            }
+            else
+            {
+                throw new Exception("Cannot have a response without a rid!");
+            }
 
-                if (baseResult.ContainsKey("result"))
-                {
-                    Result = baseResult["result"] as Dictionary<string, object>;
-                    IsError = Result == null;
-                }
-                else
-                {
-                    IsError = true;
-                }
+            if (result.ContainsKey("error") && result["error"] != null)
+            {
+                Error = result["error"] as Dictionary<string, object>;
+                IsError = true;
+            }
+
+            if (result.ContainsKey("result"))
+            {
+                Result = result["result"];
+                HashResult = Result as Dictionary<string, object>;
             }
             else
             {
@@ -61,7 +63,7 @@ namespace Maze.Service
                 Debug.Log("Did not find key: " + key);
                 return defaultValue;
             }
-            object value = Result[key];
+            object value = HashResult[key];
             Debug.Log("Value: " + value.ToString() + " | " + value.GetType().ToString() + " | " + typeof(T).ToString());
             if (typeof(T) == value.GetType())
             {
@@ -72,11 +74,11 @@ namespace Maze.Service
 
         public bool HasValue(string key)
         {
-            if (IsError || Result == null)
+            if (IsError || Result == null || HashResult == null)
             {
                 return false;
             }
-            return Result.ContainsKey(key) && Result[key] != null;
+            return HashResult.ContainsKey(key) && HashResult[key] != null;
         }
 
     }

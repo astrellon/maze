@@ -31,6 +31,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using UnityEngine;
 
 namespace MiniJSON {
     // Example usage:
@@ -313,7 +314,15 @@ namespace MiniJSON {
 
             char PeekChar {
                 get {
-                    return Convert.ToChar(json.Peek());
+                    int c =  json.Peek();
+                    try {
+                        return Convert.ToChar(c);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log("Error peeking char: " + c);
+                    }
+                    throw new Exception("Derr");
                 }
             }
 

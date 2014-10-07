@@ -93,15 +93,13 @@ class Handler(asyncore.dispatcher):
         return len(self.obuffer) > 0
 
     def handle_write(self):
-        while len(self.obuffer) > 0:
-            if self.obuffer[0] is None:
-                self.close()
-                return
+        if self.obuffer[0] is None:
+            self.close()
+            return
 
-            sent = self.send(self.obuffer[0])
-            if sent >= len(self.obuffer[0]):
-                self.obuffer.pop(0)
-            else:
-                self.obuffer[0] = self.obuffer[0][sent:]
-                break
+        sent = self.send(self.obuffer[0])
+        if sent >= len(self.obuffer[0]):
+            self.obuffer.pop(0)
+        else:
+            self.obuffer[0] = self.obuffer[0][sent:]
 

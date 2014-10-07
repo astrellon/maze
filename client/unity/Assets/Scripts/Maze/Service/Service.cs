@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -41,10 +42,15 @@ namespace Maze.Service
             return ++callbackCounter;
         }
 
+        protected StreamWriter LogFile;
+
         public Service(string host, int port)
         {
             Host = host;
             Port = port;
+
+            LogFile = new StreamWriter(@"./log.txt", true);
+            LogFile.WriteLine("\n- New Session\n-----------\n");
         }
 
         public void Connect(ConnectedCallback callback = null)
@@ -101,6 +107,7 @@ namespace Maze.Service
             Running = false;
             Client.Shutdown(SocketShutdown.Both);
             Client.Close();        
+            LogFile.Close();
         }
 
         public void Send(string cmd, object data, ResponseCallback callback = null)
@@ -117,6 +124,7 @@ namespace Maze.Service
 
             string toSend = Json.Serialize(output);
             Debug.Log("Sending data: " + toSend);
+            LogFile.WriteLine("Sending: " + toSend);
             byte[] bytes = Encoding.ASCII.GetBytes(toSend);
             Client.BeginSend(bytes, 0, bytes.Length, 0, new AsyncCallback(SendCallback), Client);
         }
@@ -151,27 +159,39 @@ namespace Maze.Service
                     Debug.Log("Bytes received: " + bytesRead);
 
                     string receivedString = Encoding.UTF8.GetString(ReceiveBuffer, 0, bytesRead);
+                    LogFile.WriteLine("Received: " + receivedString);
                     if (OnData != null)
                     {
                         OnData(null, receivedString);
                     }
                     ReceivedBufferTotal.Append(receivedString);
+                    LogFile.WriteLine("- Received total: " + ReceivedBufferTotal.ToString());
                     try
                     {
                         object receivedObject = Json.Deserialize(ReceivedBufferTotal.ToString());
-                        Response resp = new Response(receivedObject);
-                        ReceivedBufferTotal = new StringBuilder();
-                        
-                        if (resp.Result != null && resp.ResponseId > 0)
+                        Dictionary<string, object> receivedHash = receivedObject as Dictionary<string, object>;
+                        if (receivedHash.ContainsKey("cmd"))
                         {
-                            ResponseCallbacks[resp.ResponseId](resp, receivedObject);
+                            Debug.Log("Local command!: " + receivedHash["cmd"]);
+                            ReceivedBufferTotal = new StringBuilder();
+                        }
+                        else
+                        {
+                            // Change to something that supports responses and local commands!
+                            Response resp = new Response(receivedHash);
+                            ReceivedBufferTotal = new StringBuilder();
+
+                            Debug.Log("Response ID for data: " + resp.ResponseId);
+                            if (resp.ResponseId > 0)
+                            {
+                                ResponseCallbacks[resp.ResponseId](resp, receivedObject);
+                            }
                         }
                     }
                     catch (Exception e)
                     {
                         Debug.Log("Exception parsing repsonse: " + e.ToString());
                     }
-
                 }
                 catch (Exception e)
                 {

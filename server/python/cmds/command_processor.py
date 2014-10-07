@@ -110,5 +110,5 @@ class Processor:
             "world": self.world.serialise(),
             "tiles": self.world.tile_manager.serialise(),
             "player": player.id
-        }, None
+        }
 
