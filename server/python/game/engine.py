@@ -52,7 +52,6 @@ class Engine:
         self.world = game.World(self)
         self.world.setup()
 
-        self.world.load_maps()
         self.world.create_map("maps.map1", "testmap")
         #self.world.serialise()
 

@@ -42,12 +42,16 @@ namespace Maze.Service
             return ++callbackCounter;
         }
 
+        public CommandProcessor LocalCommandProcessor { get; protected set; }
+
         protected StreamWriter LogFile;
 
         public Service(string host, int port)
         {
             Host = host;
             Port = port;
+
+            LocalCommandProcessor = new CommandProcessor();
 
             LogFile = new StreamWriter(@"./log.txt", true);
             LogFile.WriteLine("\n- New Session\n-----------\n");
@@ -172,6 +176,7 @@ namespace Maze.Service
                         Dictionary<string, object> receivedHash = receivedObject as Dictionary<string, object>;
                         if (receivedHash.ContainsKey("cmd"))
                         {
+                            LocalCommand cmd = new LocalCommand(receivedHash);
                             Debug.Log("Local command!: " + receivedHash["cmd"]);
                             ReceivedBufferTotal = new StringBuilder();
                         }

@@ -6,13 +6,7 @@ module_name = ""
 class Map1(game.Map):
     def create_map(self):
         self.draw_rect(0, 0, self.width, self.height, "dirt")
-        self.draw_rect(2, 2, self.width - 2, self.height - 2, "dirt")
-        """
-        for y in range(self.height):
-            for x in range(self.width):
-                self.set_height(x, y, x +y)
-                """
-
+        self.draw_rect(2, 2, self.width - 3, self.height - 3, "dirt")
 
     @property
     def base_map(self):
